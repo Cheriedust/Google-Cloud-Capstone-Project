@@ -1,42 +1,177 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Register</title>
+  <title>Registration</title>
 </head>
-<body>
+<body style="font-family:Segoe UI; background:linear-gradient(135deg,#667eea,#764ba2); padding:30px; color:#333;">
 
-<h2>Registration</h2>
+<h1 style="color:white;">🎓 University Event Portal</h1>
 
-<form id="form">
-  <input type="text" id="name" placeholder="Name" required><br><br>
-  <input type="email" id="email" placeholder="Email" required><br><br>
-  <input type="password" id="password" placeholder="Password" required><br><br>
-  <button type="submit">Register</button>
-</form>
+<div style="background:white;padding:25px;border-radius:15px;width:320px;box-shadow:0 10px 25px rgba(0,0,0,0.2);">
+  
+  <input id="name" placeholder="Name (signup)" class="input"><br><br>
+  <input id="email" placeholder="Email" class="input"><br><br>
+  <input id="password" type="password" placeholder="Password" class="input"><br><br>
+
+  <button onclick="signup()" class="btn">Signup</button>
+  <button onclick="login()" class="btn">Login</button>
+
+  <p id="message"></p>
+</div>
+
+<hr>
+
+<div id="eventSection" style="display:none; margin-top:20px;">
+
+  <div class="card">
+    <h3>Select Event</h3>
+
+    <select id="eventDropdown" onchange="showForm()" class="input"></select>
+
+    <div id="formSection" style="display:none; margin-top:15px;">
+      <input id="fullName" placeholder="Full Name" class="input"><br><br>
+      <input id="collegeId" placeholder="College ID" class="input"><br><br>
+
+      <button onclick="register()" class="btn">Register</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>My Registrations</h3>
+    <div id="myEvents"></div>
+  </div>
+
+</div>
+
+<style>
+.input {
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+
+.btn {
+  padding:10px 15px;
+  margin-right:5px;
+  border:none;
+  border-radius:8px;
+  background:#667eea;
+  color:white;
+  cursor:pointer;
+}
+
+.btn:hover {
+  background:#5a67d8;
+}
+
+.card {
+  background:white;
+  padding:20px;
+  border-radius:15px;
+  margin-bottom:20px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.15);
+}
+</style>
 
 <script>
-document.getElementById('form').addEventListener('submit', async (e) => {
-  e.preventDefault();
+let user = null;
+let selectedEvent = null;
 
-  const name = document.getElementById('name').value;
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-
-  const res = await fetch('/register', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name, email, password })
+async function signup() {
+  const res = await fetch('/signup', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      name: name.value,
+      email: email.value,
+      password: password.value
+    })
   });
 
   const data = await res.json();
-  if (data.message) {
-    alert(data.message);
-  } else if (data.error) {
-    alert("Error: " + data.error);
-  } else {
-    alert("Unknown response");
+  message.innerText = data.message;
+}
+
+async function login() {
+  const res = await fetch('/login', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      email: email.value,
+      password: password.value
+    })
+  });
+
+  if (!res.ok) {
+    message.innerText = "Login failed";
+    return;
   }
-});
+
+  user = await res.json();
+  message.innerText = "Login successful";
+
+  eventSection.style.display = 'block';
+
+  loadEvents();
+  loadMyEvents();
+}
+
+async function loadEvents() {
+  const res = await fetch('/events');
+  const events = await res.json();
+
+  eventDropdown.innerHTML =
+    '<option value="">Select Event</option>' +
+    events.map(e => `<option value="${e.id}">${e.title}</option>`).join('');
+}
+
+function showForm() {
+  selectedEvent = eventDropdown.value;
+  formSection.style.display = selectedEvent ? 'block' : 'none';
+}
+
+async function register() {
+  await fetch('/register-event', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      userId: user.id,
+      eventId: selectedEvent,
+      fullName: fullName.value,
+      collegeId: collegeId.value
+    })
+  });
+
+  alert("Registered!");
+  loadMyEvents();
+}
+
+async function loadMyEvents() {
+  const res = await fetch(`/my-registrations/${user.id}`);
+  const events = await res.json();
+
+  myEvents.innerHTML = events.map(e => `
+    <div style="display:flex;justify-content:space-between;margin:10px 0;">
+      <span>${e.title}</span>
+      <button onclick="deleteReg(${e.id})" style="background:red;color:white;border:none;padding:5px 10px;border-radius:6px;">Delete</button>
+    </div>
+  `).join('');
+}
+
+async function deleteReg(eventId) {
+  await fetch('/delete-registration', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      userId: user.id,
+      eventId
+    })
+  });
+
+  alert("Deleted");
+  loadMyEvents();
+}
 </script>
 
 </body>
