@@ -173,8 +173,8 @@ gcloud run deploy registration-service \
 
 ## 👨‍💻 Authors
 
-* Your Name
-* Team Members (if any)
+* Lav Jeswani
+* Princy Singh
 
 ---
 
