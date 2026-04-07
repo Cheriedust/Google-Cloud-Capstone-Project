@@ -1,77 +1,202 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Registration</title>
+  <title>Event Registration</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body style="font-family:Segoe UI; background:linear-gradient(135deg,#667eea,#764ba2); padding:30px; color:#333;">
+<body>
 
-<h1 style="color:white;">🎓 University Event Portal</h1>
+<h1 class="title">University Event Portal</h1>
 
-<div style="background:white;padding:25px;border-radius:15px;width:320px;box-shadow:0 10px 25px rgba(0,0,0,0.2);">
-  
-  <input id="name" placeholder="Name (signup)" class="input"><br><br>
-  <input id="email" placeholder="Email" class="input"><br><br>
-  <input id="password" type="password" placeholder="Password" class="input"><br><br>
+<div class="container">
+  <div class="card main-card">
+    
+    <input id="name" placeholder="Name (signup)" class="input"><br><br>
+    <input id="email" placeholder="Email" class="input"><br><br>
+    <input id="password" type="password" placeholder="Password" class="input"><br><br>
 
-  <button onclick="signup()" class="btn">Signup</button>
-  <button onclick="login()" class="btn">Login</button>
+    <div class="btn-group">
+      <button onclick="signup()" class="btn">Signup</button>
+      <button onclick="login()" class="btn">Login</button>
+    </div>
 
-  <p id="message"></p>
+    <p id="message" class="message"></p>
+  </div>
 </div>
 
 <hr>
 
-<div id="eventSection" style="display:none; margin-top:20px;">
+<div id="eventSection" style="display:none;">
 
-  <div class="card">
-    <h3>Select Event</h3>
+  <div class="container">
 
-    <select id="eventDropdown" onchange="showForm()" class="input"></select>
+    <div class="card">
+      <h3>Select Event</h3>
 
-    <div id="formSection" style="display:none; margin-top:15px;">
-      <input id="fullName" placeholder="Full Name" class="input"><br><br>
-      <input id="collegeId" placeholder="College ID" class="input"><br><br>
+      <select id="eventDropdown" onchange="showForm()" class="input"></select>
 
-      <button onclick="register()" class="btn">Register</button>
+      <div id="formSection" style="display:none; margin-top:15px;">
+        <input id="fullName" placeholder="Full Name" class="input"><br><br>
+        <input id="collegeId" placeholder="College ID" class="input"><br><br>
+
+        <button onclick="register()" class="btn full">Register</button>
+      </div>
     </div>
-  </div>
 
-  <div class="card">
-    <h3>My Registrations</h3>
-    <div id="myEvents"></div>
+    <div class="card">
+      <h3>My Registrations</h3>
+      <div id="myEvents"></div>
+    </div>
+
   </div>
 
 </div>
 
 <style>
-.input {
-  width:100%;
-  padding:10px;
-  border-radius:8px;
-  border:1px solid #ccc;
+body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background: radial-gradient(circle at 20% 30%, #ff9a9e 0%, transparent 40%),
+              radial-gradient(circle at 80% 20%, #a18cd1 0%, transparent 40%),
+              radial-gradient(circle at 50% 80%, #fbc2eb 0%, transparent 40%),
+              linear-gradient(135deg,#667eea,#764ba2);
+  padding: 40px 20px;
 }
 
-.btn {
-  padding:10px 15px;
-  margin-right:5px;
-  border:none;
-  border-radius:8px;
-  background:#667eea;
-  color:white;
-  cursor:pointer;
+.title {
+  text-align: center;
+  color: white;
+  margin-bottom: 30px;
+  font-size: 2.5rem;
+  letter-spacing: 1px;
 }
 
-.btn:hover {
-  background:#5a67d8;
+.container {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
 }
 
 .card {
-  background:white;
-  padding:20px;
-  border-radius:15px;
-  margin-bottom:20px;
-  box-shadow:0 8px 20px rgba(0,0,0,0.15);
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  background: rgba(255,255,255,0.9);
+  padding: 25px 30px; /* equal left-right padding fix */
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+  backdrop-filter: blur(10px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+
+.card:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 20px 45px rgba(0,0,0,0.25);
+}
+
+.main-card {
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+.input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  background: #f9f9f9;
+  transition: all 0.3s ease;
+}
+
+.input:focus {
+  border-color: #667eea;
+  background: white;
+  outline: none;
+  box-shadow: 0 0 10px rgba(102,126,234,0.4);
+}
+
+.btn-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg,#667eea,#5a67d8);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+.btn.full {
+  width: 100%;
+}
+
+.message {
+  margin-top: 10px;
+  font-weight: 500;
+  text-align: center;
+}
+
+#myEvents div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 10px;
+  background: #f5f7ff;
+}
+
+#myEvents button {
+  background: #e53e3e;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#myEvents button:hover {
+  background: #c53030;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+hr {
+  width: 90%;
+  border: none;
+  height: 1px;
+  background: rgba(255,255,255,0.3);
+  margin: 40px auto;
+}
+
 </style>
 
 <script>
@@ -152,9 +277,9 @@ async function loadMyEvents() {
   const events = await res.json();
 
   myEvents.innerHTML = events.map(e => `
-    <div style="display:flex;justify-content:space-between;margin:10px 0;">
+    <div>
       <span>${e.title}</span>
-      <button onclick="deleteReg(${e.id})" style="background:red;color:white;border:none;padding:5px 10px;border-radius:6px;">Delete</button>
+      <button onclick="deleteReg(${e.id})">Delete</button>
     </div>
   `).join('');
 }
